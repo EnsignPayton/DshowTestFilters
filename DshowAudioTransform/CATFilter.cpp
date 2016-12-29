@@ -54,6 +54,8 @@ HRESULT CATFilter::Transform(IMediaSample * pSample)
 
 	TransformSample(pWaveFormat, pBuffer, pSample->GetSize());
 
+	FreeMediaType(pMediaType);
+
 	return S_OK;
 }
 

@@ -132,11 +132,13 @@
     <ClInclude Include="CExFilter.h" />
     <ClInclude Include="COMSupport.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="CWaveSource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CATFilter.cpp" />
     <ClCompile Include="CExFilter.cpp" />
     <ClCompile Include="COMSupport.cpp" />
+    <ClCompile Include="CWaveSource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DshowAudioTransform.def" />

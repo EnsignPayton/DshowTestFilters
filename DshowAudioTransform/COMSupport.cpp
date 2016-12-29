@@ -2,6 +2,7 @@
 #include "Constants.h"
 #include "CExFilter.h"
 #include "CATFilter.h"
+#include "CWaveSource.h"
 
 // Declare media type information
 FOURCCMap fccMap = FCC('MRLE');
@@ -10,6 +11,8 @@ REGPINTYPES sudOutputTypes = { &MEDIATYPE_Video, (GUID*)&fccMap };
 
 REGPINTYPES catInputTypes = { &MEDIATYPE_Audio, &MEDIASUBTYPE_PCM };
 REGPINTYPES catOutputTypes = { &MEDIATYPE_Audio, &MEDIASUBTYPE_PCM };
+
+REGPINTYPES cwsCaptureTypes = { &MEDIATYPE_Audio, &MEDIASUBTYPE_PCM };
 
 // Declare pin information
 REGFILTERPINS sudPinReg[] = {
@@ -56,6 +59,20 @@ REGFILTERPINS catPinReg[] = {
 	}
 };
 
+REGFILTERPINS cwsPinReg[] = {
+	{
+		NULL,
+		FALSE,
+		FALSE,
+		FALSE,
+		FALSE,
+		NULL,
+		NULL,
+		1,
+		&cwsCaptureTypes
+	}	
+};
+
 REGFILTER2 rf2FilterReg = {
 	1,					// Version number
 	MERIT_DO_NOT_USE,	// Merit
@@ -70,8 +87,16 @@ REGFILTER2 catFilterReg = {
 	catPinReg
 };
 
+REGFILTER2 cwsFilterReg = {
+	1,
+	MERIT_DO_NOT_USE,
+	1,
+	cwsPinReg
+};
+
 static WCHAR g_wszName[] = L"Example Filter";
 static WCHAR g_wszName2[] = L"Audio Transform Filter";
+static WCHAR g_wszName3[] = L"Wave Source Filter";
 CFactoryTemplate g_Templates[] =
 {
 	{
@@ -85,6 +110,13 @@ CFactoryTemplate g_Templates[] =
 		g_wszName2,
 		&CLSID_CATFilter,
 		CATFilter::CreateInstance,
+		NULL,
+		NULL
+	},
+	{
+		g_wszName3,
+		&CLSID_CWaveSource,
+		CWaveSource::CreateInstance,
 		NULL,
 		NULL
 	}
@@ -133,6 +165,24 @@ STDAPI DllRegisterServer(void)
 			g_wszName2,
 			&catFilterReg
 			);
+		if (FAILED(hr)) {
+			pFM2->Release();
+			return hr;
+		}
+
+		hr = pFM2->RegisterFilter(
+			CLSID_CWaveSource,
+			g_wszName3,
+			NULL,
+			&CLSID_AudioInputDeviceCategory,
+			g_wszName3,
+			&cwsFilterReg
+			);
+		if (FAILED(hr)) {
+			pFM2->Release();
+			return hr;
+		}
+
 		pFM2->Release();
 	}
 

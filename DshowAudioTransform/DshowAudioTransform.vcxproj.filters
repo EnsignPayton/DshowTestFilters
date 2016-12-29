@@ -27,6 +27,9 @@
     <ClInclude Include="CATFilter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CWaveSource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CExFilter.cpp">
@@ -36,6 +39,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CATFilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CWaveSource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
