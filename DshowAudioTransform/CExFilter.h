@@ -7,6 +7,8 @@
 DEFINE_GUID(CLSID_CExFilter,
 	0xa535d91e, 0x6d8f, 0x4267, 0x9f, 0x11, 0xa3, 0x8e, 0x91, 0x46, 0x61, 0x4e);
 
+#define NAME_CExFilter L"Example Filter"
+
 class CExFilter : public CTransformFilter
 {
 public:

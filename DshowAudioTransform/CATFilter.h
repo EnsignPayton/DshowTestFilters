@@ -7,6 +7,7 @@
 DEFINE_GUID(CLSID_CATFilter,
 	0xa0365714, 0x2da4, 0x47cf, 0xa5, 0xf, 0x40, 0x6c, 0xeb, 0x4b, 0xe6, 0x40);
 
+#define NAME_CATFilter L"Audio Transform Filter"
 
 class CATFilter : public CTransInPlaceFilter
 {

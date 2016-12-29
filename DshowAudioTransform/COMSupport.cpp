@@ -4,122 +4,39 @@
 #include "CATFilter.h"
 #include "CWaveSource.h"
 
-// Declare media type information
 FOURCCMap fccMap = FCC('MRLE');
-REGPINTYPES sudInputTypes = { &MEDIATYPE_Video, &GUID_NULL };
-REGPINTYPES sudOutputTypes = { &MEDIATYPE_Video, (GUID*)&fccMap };
+REGPINTYPES cexInputTypes = { &MEDIATYPE_Video, &GUID_NULL };
+REGPINTYPES cexOutputTypes = { &MEDIATYPE_Video, (GUID*)&fccMap };
 
 REGPINTYPES catInputTypes = { &MEDIATYPE_Audio, &MEDIASUBTYPE_PCM };
 REGPINTYPES catOutputTypes = { &MEDIATYPE_Audio, &MEDIASUBTYPE_PCM };
 
 REGPINTYPES cwsCaptureTypes = { &MEDIATYPE_Audio, &MEDIASUBTYPE_PCM };
 
-// Declare pin information
-REGFILTERPINS sudPinReg[] = {
-	// Input pin
-	{ 0, FALSE,	// Rendered?
-	FALSE,	// Output?
-	FALSE,	// Zero?
-	FALSE,	// Many?
-	0, 0,
-	1, &sudInputTypes
-	},
-	// Output pin
-	{ 0, FALSE,	// Rendered?
-	TRUE,	// Output?
-	FALSE,	// Zero?
-	FALSE,	// Many?
-	0, 0,
-	1, &sudOutputTypes
-	}
+REGFILTERPINS cexPinReg[] = {
+	{ NULL, FALSE, FALSE, FALSE, FALSE, NULL, NULL, 1, &cexInputTypes },
+	{ NULL, FALSE, TRUE, FALSE, FALSE, NULL, NULL, 1, &cexOutputTypes }
 };
 
 REGFILTERPINS catPinReg[] = {
-	{
-		NULL,
-		FALSE,
-		FALSE,
-		FALSE,
-		FALSE,
-		NULL,
-		NULL,
-		1,
-		&catInputTypes
-	},
-	{
-		NULL,
-		FALSE,
-		FALSE,
-		FALSE,
-		FALSE,
-		NULL,
-		NULL,
-		1,
-		&catOutputTypes
-	}
+	{ NULL, FALSE, FALSE, FALSE, FALSE, NULL, NULL, 1, &catInputTypes },
+	{ NULL, FALSE, TRUE, FALSE, FALSE, NULL, NULL, 1, &catOutputTypes }
 };
 
 REGFILTERPINS cwsPinReg[] = {
-	{
-		NULL,
-		FALSE,
-		FALSE,
-		FALSE,
-		FALSE,
-		NULL,
-		NULL,
-		1,
-		&cwsCaptureTypes
-	}	
+	{ NULL, FALSE, TRUE, FALSE, FALSE, NULL, NULL, 1, &cwsCaptureTypes }
 };
 
-REGFILTER2 rf2FilterReg = {
-	1,					// Version number
-	MERIT_DO_NOT_USE,	// Merit
-	2,					// Number of pins
-	sudPinReg			// Pointer to pin info
-};
+REGFILTER2 cexFilterReg = { 1, MERIT_DO_NOT_USE, 2, cexPinReg };
 
-REGFILTER2 catFilterReg = {
-	1,
-	MERIT_DO_NOT_USE,
-	2,
-	catPinReg
-};
+REGFILTER2 catFilterReg = { 1, MERIT_DO_NOT_USE, 2, catPinReg };
 
-REGFILTER2 cwsFilterReg = {
-	1,
-	MERIT_DO_NOT_USE,
-	1,
-	cwsPinReg
-};
+REGFILTER2 cwsFilterReg = { 1, MERIT_DO_NOT_USE, 1, cwsPinReg };
 
-static WCHAR g_wszName[] = L"Example Filter";
-static WCHAR g_wszName2[] = L"Audio Transform Filter";
-static WCHAR g_wszName3[] = L"Wave Source Filter";
-CFactoryTemplate g_Templates[] =
-{
-	{
-		g_wszName,
-		&CLSID_CExFilter,
-		CExFilter::CreateInstance,
-		NULL,
-		NULL
-	},
-	{
-		g_wszName2,
-		&CLSID_CATFilter,
-		CATFilter::CreateInstance,
-		NULL,
-		NULL
-	},
-	{
-		g_wszName3,
-		&CLSID_CWaveSource,
-		CWaveSource::CreateInstance,
-		NULL,
-		NULL
-	}
+CFactoryTemplate g_Templates[] = {
+	{ NAME_CExFilter, &CLSID_CExFilter, CExFilter::CreateInstance, NULL, NULL },
+	{ NAME_CATFilter, &CLSID_CATFilter, CATFilter::CreateInstance, NULL, NULL },
+	{ NAME_CWaveSource, &CLSID_CWaveSource, CWaveSource::CreateInstance, NULL, NULL }
 };
 
 int g_cTemplates = sizeof(g_Templates) / sizeof(g_Templates[0]);
@@ -139,18 +56,19 @@ STDAPI DllRegisterServer(void)
 	HRESULT hr = AMovieDllRegisterServer2(TRUE);
 	if (FAILED(hr)) return hr;
 
-	// Register Filters with details
+	// Register filters with details
 	IFilterMapper2 *pFM2 = NULL;
 	hr = CoCreateInstance(CLSID_FilterMapper2, NULL,
 		CLSCTX_INPROC_SERVER, IID_IFilterMapper2, (void **)&pFM2);
+
 	if (SUCCEEDED(hr)) {
 		hr = pFM2->RegisterFilter(
-			CLSID_CExFilter,				// Filter category
-			g_wszName,						// Fiter name
-			NULL,							// Device moniker
-			&CLSID_VideoCompressorCategory,	// Video compressor category
-			g_wszName,						// Instance data
-			&rf2FilterReg					// Filter information
+			CLSID_CExFilter,
+			NAME_CExFilter,
+			NULL,
+			&CLSID_VideoCompressorCategory,
+			NAME_CExFilter,
+			&cexFilterReg
 			);
 		if (FAILED(hr)) {
 			pFM2->Release();
@@ -159,10 +77,10 @@ STDAPI DllRegisterServer(void)
 
 		hr = pFM2->RegisterFilter(
 			CLSID_CATFilter,
-			g_wszName2,
+			NAME_CATFilter,
 			NULL,
 			&CLSID_AudioCompressorCategory,
-			g_wszName2,
+			NAME_CATFilter,
 			&catFilterReg
 			);
 		if (FAILED(hr)) {
@@ -172,10 +90,10 @@ STDAPI DllRegisterServer(void)
 
 		hr = pFM2->RegisterFilter(
 			CLSID_CWaveSource,
-			g_wszName3,
+			NAME_CWaveSource,
 			NULL,
 			&CLSID_AudioInputDeviceCategory,
-			g_wszName3,
+			NAME_CWaveSource,
 			&cwsFilterReg
 			);
 		if (FAILED(hr)) {
@@ -197,17 +115,31 @@ STDAPI DllUnregisterServer()
 	IFilterMapper2 *pFM2 = NULL;
 	hr = CoCreateInstance(CLSID_FilterMapper2, NULL,
 		CLSCTX_INPROC_SERVER, IID_IFilterMapper2, (void **)&pFM2);
+
 	if (SUCCEEDED(hr)) {
 		hr = pFM2->UnregisterFilter(&CLSID_VideoCompressorCategory,
-			g_wszName, CLSID_CExFilter);
+			NAME_CExFilter, CLSID_CExFilter);
 		if (FAILED(hr)) {
 			pFM2->Release();
 			return hr;
 		}
 
 		hr = pFM2->UnregisterFilter(&CLSID_AudioCompressorCategory,
-			g_wszName2, CLSID_CATFilter);
+			NAME_CATFilter, CLSID_CATFilter);
+		if (FAILED(hr)) {
+			pFM2->Release();
+			return hr;
+		}
+
+		hr = pFM2->UnregisterFilter(&CLSID_AudioInputDeviceCategory,
+			NAME_CWaveSource, CLSID_CWaveSource);
+		if (FAILED(hr)) {
+			pFM2->Release();
+			return hr;
+		}
+
 		pFM2->Release();
 	}
+
 	return hr;
 }

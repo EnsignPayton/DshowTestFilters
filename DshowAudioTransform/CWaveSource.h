@@ -7,12 +7,13 @@
 DEFINE_GUID(CLSID_CWaveSource,
 	0x8c9010c3, 0x57ee, 0x41e9, 0xa9, 0xb9, 0x26, 0x40, 0x31, 0x3e, 0xc2, 0xb4);
 
+#define NAME_CWaveSource L"Wave Source Filter"
+
 class CWaveSource : public CSource
 {
 public:
 	// Constructor
 	CWaveSource(IUnknown * pUnknown, HRESULT * pHr);
-
 
 	static CUnknown * WINAPI CreateInstance(IUnknown * pUnknown, HRESULT * pHr);
 };
@@ -30,6 +31,7 @@ public:
 	HRESULT FillBuffer(IMediaSample * pSample) override;
 
 private:
+	// Pin Properties
 	WORD m_nChannels;
 	WORD m_nBitDepth;
 	DWORD m_nSampleRate;
