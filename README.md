@@ -1,11 +1,13 @@
 # DshowAudioTransform
 Example DirectShow Audio Transform Filter
 
-This project creates a DLL containing two transform filters, a preliminary example and a functional audio compressor.
+This project creates a DLL containing two transform filters, a preliminary example and a functional audio compressor. It also contains a basic push source filter.
 
 * "Example Filter" is defined in [`CExFilter.cpp`](DshowAudioTransform/CExFilter.cpp). It is a close adaptation of the example code in [this MSDN article](https://msdn.microsoft.com/en-us/library/dd391015(v=VS.85).aspx) deriving from CTransformFilter. It has no real function other than to serve as an example.
 
 * "Audio Transfom Filter" is defined in [`CATFilter.cpp`](DshowAudioTransform/CATFilter.cpp). It is derived from CTransInPlaceFilter and designed to work with PCM audio streams. Current function is hard coded to reducing the amplitude of the input waveform by 50%.
+
+* "Wave Source Filter" is defined in [`CWaveSource.cpp`](DshowAudioTransform/CWaveSource.cpp). [This article](https://msdn.microsoft.com/en-us/library/windows/desktop/dd757807(v=vs.85).aspx) helped provide some guidance on its creation. It is derived from CSource, with a capture pin derived from CSourceStream. It generates a tone as a proof of concept.
 
 ## Windows 10 DirectShow Setup
 
