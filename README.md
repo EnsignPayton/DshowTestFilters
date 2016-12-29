@@ -38,7 +38,7 @@ regsvr32.exe .\DshowAudioTransform.dll
 Similarly, it may be unregistered through the command:
 
 ```cmd
-regsvr32.exe -u ./DshowAudioTransform.dll
+regsvr32.exe -u .\DshowAudioTransform.dll
 ```
 
 After registration, the filters should be available for use through GraphEdit and other DirectShow interfacing applications.
