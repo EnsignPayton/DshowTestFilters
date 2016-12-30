@@ -1,7 +1,7 @@
-# DshowAudioTransform
-Example DirectShow Audio Transform Filter
+# DshowTestFilters
+#### Example DirectShow Filters Project
 
-This project creates a DLL containing two transform filters, a preliminary example and a functional audio compressor. It also contains a basic push source filter.
+This project creates a DLL containing example DirectShow filters of various sophistication and usefulness.
 
 * "Example Filter" is defined in [`CExFilter.cpp`](DshowAudioTransform/CExFilter.cpp). It is a close adaptation of the example code in [this MSDN article](https://msdn.microsoft.com/en-us/library/dd391015(v=VS.85).aspx) deriving from CTransformFilter. It has no real function other than to serve as an example.
 
